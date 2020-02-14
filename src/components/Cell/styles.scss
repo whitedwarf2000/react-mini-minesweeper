@@ -1,0 +1,19 @@
+@import "../../colors";
+
+.cell {
+  background: $gray;
+  border: 1px solid $white;
+  float: left;
+  line-height: 45px;
+  height: 40px;
+  text-align: center;
+  width: 40px;
+  cursor: pointer;
+  border-radius: 5px;
+  color: $white;
+  font-weight: 600;
+
+  &:focus {
+    outline: none;
+  }
+}

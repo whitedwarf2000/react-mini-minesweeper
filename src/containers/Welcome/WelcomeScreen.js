@@ -1,5 +1,7 @@
 import React from "react";
-import './styles.scss';
+import Cell from "../../components/Cell";
+
+import "./styles.scss";
 
 const WelcomeScreen = props => {
   return (
@@ -9,6 +11,7 @@ const WelcomeScreen = props => {
         <button className="button beginner-level">Beginner</button>
         <button className="button advantage-level">Advantage</button>
       </div>
+      <Cell/>
     </div>
   );
 };
