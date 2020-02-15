@@ -3,99 +3,64 @@ import Cell from "../Cell";
 import "./styles.scss";
 
 const Board = props => {
-  const { mines, size, startNewGame } = props;
+  const { initBoard, size, startNewGame } = props;
+
+  const [newBoard, setNewBoard] = useState([]);
+  const [board, setBoard] = useState([]);
+  const [winScore, setWinScore] = useState(1);
+  const [userScore, setScore] = useState(0);
 
   const [restartGame, setRestartGame] = useState(false);
-  const [initBoard, setBoard] = useState([]);
 
-  const createBoard = () => {
-    let results = [];
-    for (let i = 0; i < size; i += 1) {
-      results.push([]);
-      for (let j = 0; j < size; j += 1) {
-        results[i][j] = {
-          x: i,
-          y: j,
-          isMine: false,
-          numberOfBoom: 0,
-          isOpen: false,
-          visited: false
-        };
+  const handleTravelBoard = (x, y, isOpen, isNumber, score) => {
+    if (isOpen) return score;
+    if (x < 0 || y < 0) return score;
+    if (x >= size || y >= size) return score;
+
+    score++;
+
+    if (isNumber) return score;
+
+    newBoard[x][y].isOpen = true;
+
+    const neighbors = [
+      [x - 1, y - 1],
+      [x - 1, y],
+      [x - 1, y + 1],
+      [x, y + 1],
+      [x + 1, y + 1],
+      [x + 1, y],
+      [x + 1, y - 1],
+      [x, y - 1]
+    ];
+
+    const isValidPosition = index => {
+      return (
+        neighbors[index][0] > -1 &&
+        neighbors[index][0] < newBoard.length &&
+        neighbors[index][1] > -1 &&
+        neighbors[index][1] < newBoard.length
+      );
+    };
+
+    for (let i = 0; i < 8; i += 1) {
+      if (isValidPosition(i)) {
+        handleTravelBoard(
+          neighbors[i][0],
+          neighbors[i][1],
+          newBoard[neighbors[i][0]][neighbors[i][1]].isOpen,
+          isNonZeroCell(x, y)
+        );
       }
     }
-    mines &&
-      mines.length > 0 &&
-      mines.forEach(mine => {
-        const hasBoom = results[mine.x][mine.y]; // position has a boom
-        if (hasBoom) {
-          hasBoom.isMine = true;
-        }
-      });
-    return results;
+    return score;
   };
-
-  const countNeighbour = () => {
-    const board = createBoard();
-    mines.length > 0 &&
-      mines.forEach(mine => {
-        const neighbors = [
-          [mine.x - 1, mine.y - 1],
-          [mine.x - 1, mine.y],
-          [mine.x - 1, mine.y + 1],
-          [mine.x, mine.y + 1],
-          [mine.x + 1, mine.y + 1],
-          [mine.x + 1, mine.y],
-          [mine.x + 1, mine.y - 1],
-          [mine.x, mine.y - 1]
-        ];
-
-        const isValidPosition = index => {
-          return (
-            neighbors[index][0] > -1 &&
-            neighbors[index][0] < board.length &&
-            neighbors[index][1] > -1 &&
-            neighbors[index][1] < board.length
-          );
-        };
-
-        for (let i = 0; i < 8; i += 1) {
-          if (isValidPosition(i)) {
-            if (!board[neighbors[i][0]][neighbors[i][1]].isMine) {
-              board[neighbors[i][0]][neighbors[i][1]].numberOfBoom += 1;
-            }
-          }
-        }
-      });
-
-    return board;
-  };
-
-  const travelBoard = (x, y, visited, size, boards) => {
-    if (visited) return;
-    if (x - 1 < 0 || y - 1 < 0) return;
-    if (x >= size || y >= size) return;
-
-    boards[x][y].visited = true;
-
-    travelBoard(x - 1, y - 1, boards[x - 1][y - 1], size, boards);
-    travelBoard(x - 1, y, boards[x - 1][y], size, boards);
-    travelBoard(x - 1, y + 1, boards[x - 1][y + 1], size, boards);
-    travelBoard(x, y - 1, boards[x][y - 1], size, boards);
-    travelBoard(x, y + 1, boards[x][y + 1], size, boards);
-    travelBoard(x + 1, y - 1, boards[x + 1][y - 1], size, boards);
-    travelBoard(x + 1, y, boards[x + 1][y], size, boards);
-    travelBoard(x + 1, y + 1, boards[x + 1][y + 1], size, boards);
-  };
-
-  // travelBoard(0, 0, false, size, createEmptyArray());
-
-  const board = countNeighbour();
 
   const handleGameOver = () => {
     const cells = [];
-    board &&
-      board.length > 0 &&
-      board.forEach(row => {
+    newBoard &&
+    newBoard.length > 0 &&
+    newBoard.forEach(row => {
         row.forEach(col => {
           col.isOpen = true;
           const cellComponent = <Cell key={Math.random()} cell={col} />;
@@ -111,26 +76,45 @@ const Board = props => {
     startNewGame();
   };
 
+  const isNonZeroCell = (x, y) => {
+    return newBoard[x][y].numberOfBoom !== 0 && !newBoard[x][y].isMine;
+  };
+
   useEffect(() => {
     const cells = [];
-    board &&
-      board.length > 0 &&
-      board.forEach(row => {
+    newBoard &&
+    newBoard.length > 0 &&
+    newBoard.forEach(row => {
         row.forEach(col => {
           const cellComponent = (
-            <Cell key={Math.random()} cell={col} openAllCell={handleGameOver} />
+            <Cell
+              key={Math.random()}
+              cell={col}
+              openAllCell={handleGameOver}
+              travelBoard={(x, y) => {
+                setScore(handleTravelBoard(x, y, false, false, userScore));
+              }}
+            />
           );
           cells.push(cellComponent);
         });
       });
     setBoard(cells);
-  }, [mines]);
+  }, [newBoard, userScore]);
+
+  useEffect(() => {
+    setNewBoard(initBoard);
+  }, [initBoard]);
 
   return (
     <>
-      {restartGame && <button className="button play-again" onClick={handleStartNewGame}>Chơi lại nha</button>}
+      {restartGame && (
+        <button className="button play-again" onClick={handleStartNewGame}>
+          Chơi lại nha
+        </button>
+      )}
       <div className="board">
-        {initBoard && initBoard.length > 0 && initBoard.map(cell => cell)}
+        {board && board.length > 0 && board.map(cell => cell)}
       </div>
     </>
   );
