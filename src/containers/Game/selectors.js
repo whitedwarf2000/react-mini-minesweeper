@@ -13,4 +13,9 @@ const getLoadingSelector = createSelector(
   mines => mines.isLoading
 );
 
-export { getMinesSelector, getLoadingSelector };
+const getErrorSelector = createSelector(
+  gameSelector,
+  mines => mines.error
+);
+
+export { getMinesSelector, getLoadingSelector, getErrorSelector };
