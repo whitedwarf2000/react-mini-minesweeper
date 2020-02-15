@@ -8,9 +8,9 @@ const Cell = props => {
 
   const handleGetValueOfCell = cell => {
     if (cell.isMine) {
-      alert('You lost!!!');
+      alert("You lost!!!");
       openAllCell();
-    } else if (!cell.isOpen){
+    } else if (!cell.isOpen) {
       travelBoard(cell.x, cell.y);
     }
   };
@@ -21,7 +21,13 @@ const Cell = props => {
       onClick={() => handleGetValueOfCell(cell)}
     >
       <div className={`${isOpen ? "show" : "hidden"}`}>
-        {isMine ? <span>💣</span> : <span>{numberOfBoom === 0 ? null : numberOfBoom}</span>}
+        {isOpen ? (
+          isMine ? (
+            <span>💣</span>
+          ) : (
+            <span>{numberOfBoom === 0 ? null : numberOfBoom}</span>
+          )
+        ) : null}
       </div>
     </div>
   );
