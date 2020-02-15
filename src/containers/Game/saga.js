@@ -5,10 +5,12 @@ import { fetchMinesSuccess, fetchMinesFail } from "./actions";
 import request from "../../utils/request";
 
 export function* fetchMines(action) {
-  const { params } = action.payload;
+  const {
+    params: { size, mines }
+  } = action.payload;
 
   const requestURL =
-    "https://tiki-minesweeper.herokuapp.com/getMines?size=9&mines=10";
+    `https://tiki-minesweeper.herokuapp.com/getMines?size=${size}&mines=${mines}`;
 
   try {
     const response = yield call(request, requestURL);

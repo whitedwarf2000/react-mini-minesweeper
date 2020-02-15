@@ -1,7 +1,31 @@
+@import "../../App";
+
 .board {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  margin: 2em auto;
+}
+
+.beginner-board {
   width: 29%;
-  margin: 0 auto;
+}
+
+.advantage-board {
+  width: 48%;
+}
+
+.button {
+  @include button;
+}
+
+.play-again {
+  background-color: $white;
+  color: $green;
+  border: 1px solid $green;
+}
+
+.play-again:hover {
+  background-color: $green;
+  color: $white;
 }
