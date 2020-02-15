@@ -9,5 +9,15 @@ export const routes = [
   {
     path: "/game",
     component: Game,
+    routes: [
+      {
+        path: "/game/beginner",
+        component: Game, //
+      },
+      {
+        path: "/game/advance",
+        // component: Cart
+      }
+    ]
   }
 ];

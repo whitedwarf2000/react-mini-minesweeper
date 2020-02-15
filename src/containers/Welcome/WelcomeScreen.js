@@ -7,7 +7,7 @@ const WelcomeScreen = props => {
   const { history } = props;
 
   const startGameForBeginner = () => {
-    history.push("/game");
+    history.push("/game/beginner");
   };
 
   return (

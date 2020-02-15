@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Cell from "../Cell";
 import "./styles.scss";
 
 const Board = props => {
   const { mines, size } = props;
+  const [initBoard, setBoard] = useState([]);
 
-  const createBoard = (height = size, width = size) => {
+  const createBoard = () => {
     let results = [];
-    for (let i = 0; i < height; i++) {
+    for (let i = 0; i < size; i += 1) {
       results.push([]);
-      for (let j = 0; j < width; j++) {
+      for (let j = 0; j < size; j += 1) {
         results[i][j] = {
           x: i,
           y: j,
@@ -24,7 +25,7 @@ const Board = props => {
     mines &&
       mines.length > 0 &&
       mines.forEach(mine => {
-        const hasBoom = results[mine.x][mine.y];
+        const hasBoom = results[mine.x][mine.y]; // position has a boom
         if (hasBoom) {
           hasBoom.isMine = true;
         }
@@ -33,7 +34,7 @@ const Board = props => {
   };
 
   const countNeighbour = () => {
-    const board = [...createBoard()];
+    const board = createBoard();
     mines.length > 0 &&
       mines.forEach(mine => {
         const neighbors = [
@@ -47,13 +48,17 @@ const Board = props => {
           [mine.x, mine.y - 1]
         ];
 
-        for (let i = 0; i < 8; i++) {
-          if (
-            neighbors[i][0] > -1 &&
-            neighbors[i][0] < board.length &&
-            neighbors[i][1] > -1 &&
-            neighbors[i][1] < board.length
-          ) {
+        const isValidPosition = index => {
+          return (
+            neighbors[index][0] > -1 &&
+            neighbors[index][0] < board.length &&
+            neighbors[index][1] > -1 &&
+            neighbors[index][1] < board.length
+          );
+        };
+
+        for (let i = 0; i < 8; i += 1) {
+          if (isValidPosition(i)) {
             if (!board[neighbors[i][0]][neighbors[i][1]].isMine) {
               board[neighbors[i][0]][neighbors[i][1]].numberOfBoom += 1;
             }
@@ -66,21 +71,40 @@ const Board = props => {
 
   const board = countNeighbour();
 
-  const renderCell = () => {
+  const handleGameOver = () => {
     const cells = [];
     board &&
       board.length > 0 &&
       board.forEach(row => {
         row.forEach(col => {
+          col.isOpen = true;
           const cellComponent = <Cell key={Math.random()} cell={col} />;
           cells.push(cellComponent);
         });
       });
-
-    return cells;
+    setBoard(cells);
   };
 
-  return <div className="board">{renderCell()}</div>;
+  useEffect(() => {
+    const cells = [];
+    board &&
+      board.length > 0 &&
+      board.forEach(row => {
+        row.forEach(col => {
+          const cellComponent = (
+            <Cell key={Math.random()} cell={col} openAllCell={handleGameOver} />
+          );
+          cells.push(cellComponent);
+        });
+      });
+    setBoard(cells);
+  }, [mines]);
+
+  return (
+    <div className="board">
+      {initBoard && initBoard.length > 0 && initBoard.map(cell => cell)}
+    </div>
+  );
 };
 
 export default Board;
