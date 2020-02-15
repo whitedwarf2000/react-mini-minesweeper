@@ -1,19 +1,24 @@
 import React from "react";
-import Cell from "../../components/Cell";
+import { withRouter } from "react-router-dom";
 
 import "./styles.scss";
 
 const WelcomeScreen = props => {
+  const { history } = props;
+
+  const startGameForBeginner = () => {
+    history.push("/game");
+  };
+
   return (
     <div className="welcome-wrapper">
       <div className="welcome-wrapper_infor">
         <p>Select your level</p>
-        <button className="button beginner-level">Beginner</button>
+        <button className="button beginner-level" onClick={startGameForBeginner}>Beginner</button>
         <button className="button advantage-level">Advantage</button>
       </div>
-      <Cell/>
     </div>
   );
 };
 
-export default WelcomeScreen;
+export default withRouter(WelcomeScreen);

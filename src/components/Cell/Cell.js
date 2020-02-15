@@ -1,20 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import "./styles.scss";
 
 const Cell = props => {
+  const { cell } = props;
+  const [isOpen, setOpenCell] = useState(false);
 
-  const renderCell = () => {
-    const cells = [];
-    for (let i = 0; i < 81; i += 1) {
-      cells.push(<div key={i} className="cell"></div>);
-    }
-    return cells;
-  };
+  const { isMine, numberOfBoom } = cell;
 
   return (
-    <>
-      {renderCell()}
-    </>
+    <div
+      className={`cell ${isOpen ? "cell_visible" : ""}`}
+      onClick={() => setOpenCell(true)}
+    >
+      <div className={`${isOpen ? "show" : "hidden"}`}>
+        {isMine ? <span>💣</span> : <span>{numberOfBoom}</span>}
+      </div>
+    </div>
   );
 };
 

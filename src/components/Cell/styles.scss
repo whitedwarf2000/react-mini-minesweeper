@@ -1,7 +1,7 @@
 @import "../../colors";
 
 .cell {
-  background: $gray;
+  background: $blur-black;
   border: 1px solid $white;
   float: left;
   line-height: 45px;
@@ -16,4 +16,16 @@
   &:focus {
     outline: none;
   }
+
+  &_visible {
+    background: $gray;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.display {
+  display: block;
 }
