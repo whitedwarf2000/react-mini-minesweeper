@@ -1,19 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 import "./styles.scss";
 
 const Cell = props => {
-  const { cell } = props;
-  const [isOpen, setOpenCell] = useState(false);
+  const { cell, openAllCell, travelBoard } = props;
 
-  const { isMine, numberOfBoom } = cell;
+  const { isMine, isOpen, numberOfBoom } = cell;
+
+  const handleGetValueOfCell = cell => {
+    if (cell.isMine) {
+      alert('You lost!!!');
+      openAllCell();
+    } else if (!cell.isOpen){
+      travelBoard(cell.x, cell.y);
+    }
+  };
 
   return (
     <div
       className={`cell ${isOpen ? "cell_visible" : ""}`}
-      onClick={() => setOpenCell(true)}
+      onClick={() => handleGetValueOfCell(cell)}
     >
       <div className={`${isOpen ? "show" : "hidden"}`}>
-        {isMine ? <span>💣</span> : <span>{numberOfBoom}</span>}
+        {isMine ? <span>💣</span> : <span>{numberOfBoom === 0 ? null : numberOfBoom}</span>}
       </div>
     </div>
   );

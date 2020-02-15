@@ -1,27 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 
 import { fetchMines } from "./actions";
-import { getMinesSelector } from "./selectors";
-import Board from "../../components/Board";
+import { getMinesSelector, getLoadingSelector } from "./selectors";
+
+import Advantage from "./Advantage";
+import Beginner from "./Beginner";
 
 const Game = props => {
-  const { getMines, mines } = props;
+  const { history } = props;
 
-  const defaultParams = {
-    size: 9,
-    mines: 10
-  };
+  const [renderComponent, setComponent] = useState(null);
 
   useEffect(() => {
-    getMines(defaultParams);
-  }, []);
+    if (history) {
+      const {
+        location: { pathname }
+      } = history;
+      if (pathname.includes("beginner")) {
+        setComponent(<Beginner />);
+      } else {
+        setComponent(<Advantage />);
+      }
+    }
+  }, [history]);
 
-  return <Board mines={mines} size={defaultParams.size} />;
+  return <>{renderComponent}</>;
 };
 
 const mapStateToProps = state => {
   return {
+    isLoading: getLoadingSelector(state),
     mines: getMinesSelector(state)
   };
 };
