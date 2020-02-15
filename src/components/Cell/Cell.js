@@ -3,13 +3,14 @@ import "./styles.scss";
 
 const Cell = props => {
   const { cell, openAllCell, travelBoard } = props;
-
   const { isMine, isOpen, numberOfBoom } = cell;
 
   const handleGetValueOfCell = cell => {
     if (cell.isMine) {
       alert("You lost!!!");
-      openAllCell();
+      if (openAllCell) {
+        openAllCell();
+      }
     } else if (!cell.isOpen) {
       travelBoard(cell.x, cell.y);
     }
