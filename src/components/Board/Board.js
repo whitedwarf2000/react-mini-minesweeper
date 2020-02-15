@@ -3,7 +3,9 @@ import Cell from "../Cell";
 import "./styles.scss";
 
 const Board = props => {
-  const { mines, size } = props;
+  const { mines, size, startNewGame } = props;
+
+  const [restartGame, setRestartGame] = useState(false);
   const [initBoard, setBoard] = useState([]);
 
   const createBoard = () => {
@@ -17,8 +19,7 @@ const Board = props => {
           isMine: false,
           numberOfBoom: 0,
           isOpen: false,
-          visited: false,
-          isEmpty: false
+          visited: false
         };
       }
     }
@@ -69,6 +70,25 @@ const Board = props => {
     return board;
   };
 
+  const travelBoard = (x, y, visited, size, boards) => {
+    if (visited) return;
+    if (x - 1 < 0 || y - 1 < 0) return;
+    if (x >= size || y >= size) return;
+
+    boards[x][y].visited = true;
+
+    travelBoard(x - 1, y - 1, boards[x - 1][y - 1], size, boards);
+    travelBoard(x - 1, y, boards[x - 1][y], size, boards);
+    travelBoard(x - 1, y + 1, boards[x - 1][y + 1], size, boards);
+    travelBoard(x, y - 1, boards[x][y - 1], size, boards);
+    travelBoard(x, y + 1, boards[x][y + 1], size, boards);
+    travelBoard(x + 1, y - 1, boards[x + 1][y - 1], size, boards);
+    travelBoard(x + 1, y, boards[x + 1][y], size, boards);
+    travelBoard(x + 1, y + 1, boards[x + 1][y + 1], size, boards);
+  };
+
+  // travelBoard(0, 0, false, size, createEmptyArray());
+
   const board = countNeighbour();
 
   const handleGameOver = () => {
@@ -83,6 +103,12 @@ const Board = props => {
         });
       });
     setBoard(cells);
+    setRestartGame(true);
+  };
+
+  const handleStartNewGame = () => {
+    setRestartGame(false);
+    startNewGame();
   };
 
   useEffect(() => {
@@ -101,9 +127,12 @@ const Board = props => {
   }, [mines]);
 
   return (
-    <div className="board">
-      {initBoard && initBoard.length > 0 && initBoard.map(cell => cell)}
-    </div>
+    <>
+      {restartGame && <button className="button play-again" onClick={handleStartNewGame}>Chơi lại nha</button>}
+      <div className="board">
+        {initBoard && initBoard.length > 0 && initBoard.map(cell => cell)}
+      </div>
+    </>
   );
 };
 

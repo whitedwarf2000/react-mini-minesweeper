@@ -17,7 +17,11 @@ const Game = props => {
     getMines(defaultParams);
   }, []);
 
-  return <Board mines={mines} size={defaultParams.size} />;
+  const startGame = () => {
+    getMines(defaultParams);
+  };
+
+  return <Board mines={mines} size={defaultParams.size} startNewGame={startGame} />;
 };
 
 const mapStateToProps = state => {
