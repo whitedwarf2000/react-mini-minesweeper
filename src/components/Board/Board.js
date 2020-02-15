@@ -49,7 +49,7 @@ const Board = props => {
           neighbors[i][0],
           neighbors[i][1],
           newBoard[neighbors[i][0]][neighbors[i][1]].isOpen,
-          isNonZeroCell(x, y)
+          isNumberCell(x, y)
         );
       }
     }
@@ -76,7 +76,7 @@ const Board = props => {
     startNewGame();
   };
 
-  const isNonZeroCell = (x, y) => {
+  const isNumberCell = (x, y) => {
     return newBoard[x][y].numberOfBoom !== 0 && !newBoard[x][y].isMine;
   };
 
@@ -125,12 +125,12 @@ const Board = props => {
           Back to home
         </button>
       )}
-      {restartGame && (
+      {hasWon || restartGame ? (
         <button className="button play-again" onClick={handleStartNewGame}>
-          Chơi lại nha
+          Reset game
         </button>
-      )}
-      <div className="board">
+      ) : null}
+      <div className={`board ${size === 9 ? "beginner-board" : "advantage-board"}`}>
         {board && board.length > 0 && board.map(cell => cell)}
       </div>
     </>

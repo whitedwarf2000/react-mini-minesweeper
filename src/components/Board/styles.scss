@@ -4,8 +4,15 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  width: 29%;
   margin: 2em auto;
+}
+
+.beginner-board {
+  width: 29%;
+}
+
+.advantage-board {
+  width: 48%;
 }
 
 .button {

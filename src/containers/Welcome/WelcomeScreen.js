@@ -10,12 +10,16 @@ const WelcomeScreen = props => {
     history.push("/game/beginner");
   };
 
+  const startGameForAdvantage = () => {
+    history.push("/game/advantage");
+  };
+
   return (
     <div className="welcome-wrapper">
       <div className="welcome-wrapper_infor">
         <p>Select your level</p>
         <button className="button beginner-level" onClick={startGameForBeginner}>Beginner</button>
-        <button className="button advantage-level">Advantage</button>
+        <button className="button advantage-level" onClick={startGameForAdvantage}>Advantage</button>
       </div>
     </div>
   );
