@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from "react";
+import { withRouter } from "react-router-dom";
+
 import Cell from "../Cell";
 import "./styles.scss";
 
 const Board = props => {
-  const { initBoard, size, startNewGame } = props;
+  const { initBoard, size, winScore, startNewGame, history } = props;
 
   const [newBoard, setNewBoard] = useState([]);
   const [board, setBoard] = useState([]);
-  const [winScore, setWinScore] = useState(1);
   const [userScore, setScore] = useState(0);
 
+  const [hasWon, setWonGame] = useState(false);
   const [restartGame, setRestartGame] = useState(false);
 
-  const handleTravelBoard = (x, y, isOpen, isNumber, score) => {
-    if (isOpen) return score;
-    if (x < 0 || y < 0) return score;
-    if (x >= size || y >= size) return score;
-
-    score++;
-
-    if (isNumber) return score;
+  const handleTravelBoard = (x, y, isOpen, cell) => {
+    if (isOpen) return;
+    if (x < 0 || y < 0) return;
+    if (x >= size || y >= size) return;
+    if (cell) return;
 
     newBoard[x][y].isOpen = true;
+    setScore(preScore => preScore + 1);
 
     const neighbors = [
       [x - 1, y - 1],
@@ -53,14 +53,13 @@ const Board = props => {
         );
       }
     }
-    return score;
   };
 
   const handleGameOver = () => {
     const cells = [];
     newBoard &&
-    newBoard.length > 0 &&
-    newBoard.forEach(row => {
+      newBoard.length > 0 &&
+      newBoard.forEach(row => {
         row.forEach(col => {
           col.isOpen = true;
           const cellComponent = <Cell key={Math.random()} cell={col} />;
@@ -73,6 +72,7 @@ const Board = props => {
 
   const handleStartNewGame = () => {
     setRestartGame(false);
+    setScore(0);
     startNewGame();
   };
 
@@ -83,8 +83,8 @@ const Board = props => {
   useEffect(() => {
     const cells = [];
     newBoard &&
-    newBoard.length > 0 &&
-    newBoard.forEach(row => {
+      newBoard.length > 0 &&
+      newBoard.forEach(row => {
         row.forEach(col => {
           const cellComponent = (
             <Cell
@@ -92,7 +92,7 @@ const Board = props => {
               cell={col}
               openAllCell={handleGameOver}
               travelBoard={(x, y) => {
-                setScore(handleTravelBoard(x, y, false, false, userScore));
+                handleTravelBoard(x, y, false, false);
               }}
             />
           );
@@ -106,8 +106,25 @@ const Board = props => {
     setNewBoard(initBoard);
   }, [initBoard]);
 
+  useEffect(() => {
+    if (userScore === winScore) {
+      alert("You win!!!");
+      setWonGame(true);
+    }
+  }, [userScore]);
+
   return (
     <>
+      {hasWon && (
+        <button
+          className="button play-again"
+          onClick={() => {
+            history.push("/welcome");
+          }}
+        >
+          Back to home
+        </button>
+      )}
       {restartGame && (
         <button className="button play-again" onClick={handleStartNewGame}>
           Chơi lại nha
@@ -120,4 +137,4 @@ const Board = props => {
   );
 };
 
-export default Board;
+export default withRouter(Board);

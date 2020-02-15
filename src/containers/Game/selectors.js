@@ -8,4 +8,9 @@ const getMinesSelector = createSelector(
   mines => mines.minesData
 );
 
-export { getMinesSelector };
+const getLoadingSelector = createSelector(
+  gameSelector,
+  mines => mines.isLoading
+);
+
+export { getMinesSelector, getLoadingSelector };
