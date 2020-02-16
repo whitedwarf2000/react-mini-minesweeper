@@ -1,6 +1,6 @@
 # react-mini-minesweeper
 
-https://recordit.co/Li8NkpI3HC
+Live demo: https://recordit.co/Li8NkpI3HC
 
 ## Installation
 
