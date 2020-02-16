@@ -1,11 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { withRouter } from "react-router-dom";
 
 import Cell from "../Cell";
 import "./styles.scss";
 
-const Board = props => {
-  const { initBoard, size, winScore, startNewGame, history } = props;
+const Board = memo(props => {
+  const {
+    initBoard,
+    size,
+    winScore,
+    startNewGame,
+    history,
+    handleWinGame,
+    handleLostGame
+  } = props;
 
   const [newBoard, setNewBoard] = useState([]);
   const [board, setBoard] = useState([]);
@@ -68,6 +76,7 @@ const Board = props => {
       });
     setBoard(cells);
     setRestartGame(true);
+    handleLostGame();
   };
 
   const handleStartNewGame = () => {
@@ -76,9 +85,8 @@ const Board = props => {
     startNewGame();
   };
 
-  const isNumberCell = (x, y) => {
-    return newBoard[x][y].numberOfBoom !== 0 && !newBoard[x][y].isMine;
-  };
+  const isNumberCell = (x, y) =>
+    newBoard[x][y].numberOfBoom !== 0 && !newBoard[x][y].isMine;
 
   useEffect(() => {
     const cells = [];
@@ -108,7 +116,7 @@ const Board = props => {
 
   useEffect(() => {
     if (userScore === winScore) {
-      alert("You win!!!");
+      handleWinGame();
       setWonGame(true);
     }
   }, [userScore]);
@@ -130,11 +138,13 @@ const Board = props => {
           Reset game
         </button>
       ) : null}
-      <div className={`board ${size === 9 ? "beginner-board" : "advantage-board"}`}>
+      <div
+        className={`board ${size === 9 ? "beginner-board" : "advantage-board"}`}
+      >
         {board && board.length > 0 && board.map(cell => cell)}
       </div>
     </>
   );
-};
+});
 
 export default withRouter(Board);
