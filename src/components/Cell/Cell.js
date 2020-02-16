@@ -7,7 +7,6 @@ const Cell = props => {
 
   const handleGetValueOfCell = cell => {
     if (cell.isMine) {
-      alert("You lost!!!");
       if (openAllCell) {
         openAllCell();
       }

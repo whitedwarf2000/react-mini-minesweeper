@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { connect } from "react-redux";
 
 import { fetchMines } from "./actions";
@@ -9,13 +9,15 @@ import {
 } from "./selectors";
 import Board from "../../components/Board";
 
-const BaseGame = props => {
+const BaseGame = memo(props => {
   const { getMines, mines, isLoading, error, defaultParams } = props;
 
   const size = defaultParams.size;
   const winScore = size * size - defaultParams.mines;
 
   const [initBoard, setBoard] = useState([]);
+  const [seconds, setSeconds] = useState(0);
+  const [isStartTimer, setStartTimer] = useState(false);
 
   const createBoard = () => {
     let results = [];
@@ -80,13 +82,37 @@ const BaseGame = props => {
 
   const board = countNeighbour();
 
+  const formatTimer = () =>
+    new Date(seconds * 1000).toISOString().substr(11, 8);
+
+  const handleGameStatus = gameStatus => () => {
+    if (gameStatus === "win") alert(`You win: ${formatTimer()}`);
+    else alert(`You lost: ${formatTimer()}`);
+
+    setSeconds(0);
+    setStartTimer(false);
+  };
+
   useEffect(() => {
     getMines(defaultParams);
   }, []);
 
   useEffect(() => {
     setBoard(board);
+    setStartTimer(true);
   }, [mines]);
+
+  useEffect(() => {
+    let interval = null;
+    if (isStartTimer) {
+      interval = setInterval(() => {
+        setSeconds(seconds => seconds + 1);
+      }, 1000);
+    } else if (!isStartTimer && seconds !== 0) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isStartTimer, seconds]);
 
   const startGame = () => {
     getMines(defaultParams);
@@ -104,11 +130,13 @@ const BaseGame = props => {
           size={size}
           winScore={winScore}
           startNewGame={startGame}
+          handleWinGame={handleGameStatus("win")}
+          handleLostGame={handleGameStatus("lost")}
         />
       )}
     </>
   );
-};
+});
 
 const mapStateToProps = state => {
   return {
