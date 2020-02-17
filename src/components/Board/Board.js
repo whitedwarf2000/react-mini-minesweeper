@@ -124,20 +124,20 @@ const Board = memo(props => {
 
   return (
     <>
-      {hasWon && (
-        <button
-          className="button play-again"
-          onClick={() => {
-            history.push("/welcome");
-          }}
-        >
-          Back to home
-        </button>
-      )}
-      {hasWon || restartGame ? (
-        <button className="button play-again" onClick={handleStartNewGame}>
-          Reset game
-        </button>
+      {restartGame ? (
+        <>
+          <button
+            className="button play-again"
+            onClick={() => {
+              history.push("/welcome");
+            }}
+          >
+            Back to home
+          </button>
+          <button className="button play-again" onClick={handleStartNewGame}>
+            Reset game
+          </button>
+        </>
       ) : null}
       <div
         className={`board ${size === 9 ? "beginner-board" : "advantage-board"}`}

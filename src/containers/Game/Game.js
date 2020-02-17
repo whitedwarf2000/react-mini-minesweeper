@@ -20,16 +20,18 @@ const Game = memo(props => {
   const winScore = size * size - defaultParams.mines;
 
   const [isGameStart, setGameStart] = useState(false);
+  const [isRefresh, setRefreshTime] = useState(false);
 
   const handleGameStatus = gameStatus => {
-    setGameStart(false);
-
     if (gameStatus === GAME_STATUS.WIN) alert("You win");
     else alert("You lost");
+    setGameStart(false);
+    setRefreshTime(false);
   };
 
   const startGame = () => {
     getMines(defaultParams);
+    setRefreshTime(true);
   };
 
   useEffect(() => {
@@ -44,7 +46,7 @@ const Game = memo(props => {
 
   return (
     <>
-      <Timer isGameStart={isGameStart} />
+      <Timer isGameStart={isGameStart} isRefresh={isRefresh} />
       <BaseGame
         mines={mines}
         isLoading={isLoading}

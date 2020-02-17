@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 
 const Timer = memo(props => {
-  const { isGameStart } = props;
+  const { isGameStart, isRefresh } = props;
 
   const [seconds, setSeconds] = useState(0);
 
@@ -15,14 +15,19 @@ const Timer = memo(props => {
         setSeconds(seconds => seconds + 1);
       }, 1000);
     } else if (!isGameStart && seconds !== 0) {
-      setSeconds(0);
       clearInterval(interval);
     }
     return () => clearInterval(interval);
   }, [isGameStart]);
 
+  useEffect(() => {
+    if (isRefresh) {
+      setSeconds(0);
+    }
+  }, [isGameStart, isRefresh]);
+
   return (
-    <h2>{formatTimer()}</h2>
+    <h2>Time: {formatTimer()}</h2>
   );
 });
 
