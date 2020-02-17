@@ -1,7 +1,8 @@
 import {
   FETCH_MINES,
   FETCH_MINES_SUCCESS,
-  FETCH_MINES_FAIL
+  FETCH_MINES_FAIL,
+  RESET_STATE
 } from "./actionTypes";
 
 const initialState = {
@@ -18,6 +19,8 @@ export const gameReducer = (state = initialState, action) => {
       return { ...state, minesData: action.data, isLoading: false };
     case FETCH_MINES_FAIL:
       return { ...state, error: action.error, isLoading: false };
+    case RESET_STATE:
+      return { ...state, minesData: [], error: null, isLoading: false };
     default:
       return state;
   }

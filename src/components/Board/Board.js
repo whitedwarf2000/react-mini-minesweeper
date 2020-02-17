@@ -1,7 +1,9 @@
 import React, { memo, useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 
 import Cell from "../Cell";
+import { GAME_STATUS } from "../../constants";
 import "./styles.scss";
 
 const Board = memo(props => {
@@ -11,8 +13,8 @@ const Board = memo(props => {
     winScore,
     startNewGame,
     history,
-    handleWinGame,
-    handleLostGame
+    handleGameStatus,
+    handleResetState
   } = props;
 
   const [newBoard, setNewBoard] = useState([]);
@@ -70,13 +72,13 @@ const Board = memo(props => {
       newBoard.forEach(row => {
         row.forEach(col => {
           col.isOpen = true;
-          const cellComponent = <Cell key={Math.random()} cell={col} />;
+          const cellComponent = <Cell key={col.id} cell={col} />;
           cells.push(cellComponent);
         });
       });
     setBoard(cells);
     setRestartGame(true);
-    handleLostGame();
+    handleGameStatus(GAME_STATUS.LOST);
   };
 
   const handleStartNewGame = () => {
@@ -96,7 +98,7 @@ const Board = memo(props => {
         row.forEach(col => {
           const cellComponent = (
             <Cell
-              key={Math.random()}
+              key={col.id}
               cell={col}
               openAllCell={handleGameOver}
               travelBoard={(x, y) => {
@@ -116,27 +118,28 @@ const Board = memo(props => {
 
   useEffect(() => {
     if (userScore === winScore) {
-      handleWinGame();
+      handleGameStatus(GAME_STATUS.WIN);
       setWonGame(true);
     }
   }, [userScore]);
 
   return (
     <>
-      {hasWon && (
-        <button
-          className="button play-again"
-          onClick={() => {
-            history.push("/welcome");
-          }}
-        >
-          Back to home
-        </button>
-      )}
       {hasWon || restartGame ? (
-        <button className="button play-again" onClick={handleStartNewGame}>
-          Reset game
-        </button>
+        <>
+          <button
+            className="button play-again"
+            onClick={() => {
+              handleResetState();
+              history.push("/welcome");
+            }}
+          >
+            Back to home
+          </button>
+          <button className="button play-again" onClick={handleStartNewGame}>
+            Reset game
+          </button>
+        </>
       ) : null}
       <div
         className={`board ${size === 9 ? "beginner-board" : "advantage-board"}`}
@@ -146,5 +149,14 @@ const Board = memo(props => {
     </>
   );
 });
+
+Board.propTypes = {
+  initBoard: PropTypes.array,
+  size: PropTypes.number,
+  winScore: PropTypes.number,
+  startNewGame: PropTypes.func,
+  history: PropTypes.any,
+  handleGameStatus: PropTypes.func
+};
 
 export default withRouter(Board);

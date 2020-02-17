@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import "./styles.scss";
 
 const Cell = props => {
@@ -31,6 +32,12 @@ const Cell = props => {
       </div>
     </div>
   );
+};
+
+Cell.propTypes = {
+  cell: PropTypes.object,
+  openAllCell: PropTypes.func,
+  travelBoard: PropTypes.func
 };
 
 export default Cell;
