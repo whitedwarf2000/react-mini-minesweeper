@@ -1,5 +1,5 @@
 import React from "react";
-import BaseGame from "./BaseGame";
+import Game from "./Game";
 
 const Beginner = () => {
   const defaultParams = {
@@ -7,7 +7,7 @@ const Beginner = () => {
     mines: 10
   };
 
-  return <BaseGame defaultParams={defaultParams}/>
+  return <Game defaultParams={defaultParams}/>
 };
 
 export default Beginner;

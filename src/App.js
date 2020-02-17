@@ -13,15 +13,7 @@ function App() {
         <Switch>
           <Redirect exact from="/" to="/welcome" />
           {routes.map((route, index) => {
-            return (
-              <Route
-                key={index}
-                path={route.path}
-                render={props => (
-                  <route.component {...props} routes={route.routes} />
-                )}
-              />
-            );
+            return <Route key={index} path={route.path} component={route.component} />;
           })}
         </Switch>
       </Router>
