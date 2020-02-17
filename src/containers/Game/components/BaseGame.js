@@ -12,7 +12,8 @@ const BaseGame = memo(props => {
     size,
     winScore,
     startNewGame,
-    handleGameStatus
+    handleGameStatus,
+    handleResetState
   } = props;
 
   const [initBoard, setBoard] = useState([]);
@@ -99,6 +100,7 @@ const BaseGame = memo(props => {
           winScore={winScore}
           startNewGame={startNewGame}
           handleGameStatus={handleGameStatus}
+          handleResetState={handleResetState}
         />
       )}
     </>

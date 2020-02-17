@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { fetchMines } from "./actions";
+import { fetchMines, resetState } from "./actions";
 import {
   getMinesSelector,
   getLoadingSelector,
@@ -14,7 +14,7 @@ import Timer from "./components/Timer";
 import { GAME_STATUS } from "../../constants";
 
 const Game = memo(props => {
-  const { getMines, mines, isLoading, error, defaultParams } = props;
+  const { getMines, mines, isLoading, error, defaultParams, reset } = props;
 
   const size = defaultParams.size;
   const winScore = size * size - defaultParams.mines;
@@ -32,6 +32,10 @@ const Game = memo(props => {
   const startGame = () => {
     getMines(defaultParams);
     setRefreshTime(true);
+  };
+
+  const handleResetState = () => {
+    reset();
   };
 
   useEffect(() => {
@@ -55,6 +59,7 @@ const Game = memo(props => {
         winScore={winScore}
         startNewGame={startGame}
         handleGameStatus={handleGameStatus}
+        handleResetState={handleResetState}
       />
     </>
   );
@@ -80,6 +85,9 @@ const mapDispatchToProps = dispatch => {
   return {
     getMines: params => {
       dispatch(fetchMines(params));
+    },
+    reset: () => {
+      dispatch(resetState());
     }
   };
 };

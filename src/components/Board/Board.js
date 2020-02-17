@@ -13,7 +13,8 @@ const Board = memo(props => {
     winScore,
     startNewGame,
     history,
-    handleGameStatus
+    handleGameStatus,
+    handleResetState
   } = props;
 
   const [newBoard, setNewBoard] = useState([]);
@@ -124,11 +125,12 @@ const Board = memo(props => {
 
   return (
     <>
-      {restartGame ? (
+      {hasWon || restartGame ? (
         <>
           <button
             className="button play-again"
             onClick={() => {
+              handleResetState();
               history.push("/welcome");
             }}
           >
