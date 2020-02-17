@@ -1,23 +1,21 @@
 import React, { memo, useEffect, useState } from "react";
-import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import { fetchMines } from "./actions";
-import {
-  getMinesSelector,
-  getLoadingSelector,
-  getErrorSelector
-} from "./selectors";
-import Board from "../../components/Board";
+import Board from "../../../components/Board";
+import { uuidv4 } from "../../../utils/commons";
 
 const BaseGame = memo(props => {
-  const { getMines, mines, isLoading, error, defaultParams } = props;
-
-  const size = defaultParams.size;
-  const winScore = size * size - defaultParams.mines;
+  const {
+    mines,
+    isLoading,
+    error,
+    size,
+    winScore,
+    startNewGame,
+    handleGameStatus
+  } = props;
 
   const [initBoard, setBoard] = useState([]);
-  const [seconds, setSeconds] = useState(0);
-  const [isStartTimer, setStartTimer] = useState(false);
 
   const createBoard = () => {
     let results = [];
@@ -25,6 +23,7 @@ const BaseGame = memo(props => {
       results.push([]);
       for (let j = 0; j < size; j += 1) {
         results[i][j] = {
+          id: uuidv4(),
           x: i,
           y: j,
           isMine: false,
@@ -46,7 +45,8 @@ const BaseGame = memo(props => {
 
   const countNeighbour = () => {
     const newBoard = createBoard();
-    mines.length > 0 &&
+    mines &&
+      mines.length > 0 &&
       mines.forEach(mine => {
         const neighbors = [
           [mine.x - 1, mine.y - 1],
@@ -82,41 +82,9 @@ const BaseGame = memo(props => {
 
   const board = countNeighbour();
 
-  const formatTimer = () =>
-    new Date(seconds * 1000).toISOString().substr(11, 8);
-
-  const handleGameStatus = gameStatus => () => {
-    if (gameStatus === "win") alert(`You win: ${formatTimer()}`);
-    else alert(`You lost: ${formatTimer()}`);
-
-    setSeconds(0);
-    setStartTimer(false);
-  };
-
-  useEffect(() => {
-    getMines(defaultParams);
-  }, []);
-
   useEffect(() => {
     setBoard(board);
-    setStartTimer(true);
   }, [mines]);
-
-  useEffect(() => {
-    let interval = null;
-    if (isStartTimer) {
-      interval = setInterval(() => {
-        setSeconds(seconds => seconds + 1);
-      }, 1000);
-    } else if (!isStartTimer && seconds !== 0) {
-      clearInterval(interval);
-    }
-    return () => clearInterval(interval);
-  }, [isStartTimer, seconds]);
-
-  const startGame = () => {
-    getMines(defaultParams);
-  };
 
   return (
     <>
@@ -129,32 +97,22 @@ const BaseGame = memo(props => {
           initBoard={initBoard}
           size={size}
           winScore={winScore}
-          startNewGame={startGame}
-          handleWinGame={handleGameStatus("win")}
-          handleLostGame={handleGameStatus("lost")}
+          startNewGame={startNewGame}
+          handleGameStatus={handleGameStatus}
         />
       )}
     </>
   );
 });
 
-const mapStateToProps = state => {
-  return {
-    error: getErrorSelector(state),
-    isLoading: getLoadingSelector(state),
-    mines: getMinesSelector(state)
-  };
+BaseGame.propTypes = {
+  mines: PropTypes.array,
+  isLoading: PropTypes.bool,
+  error: PropTypes.any,
+  size: PropTypes.number,
+  winScore: PropTypes.number,
+  startNewGame: PropTypes.func,
+  handleGameStatus: PropTypes.func
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getMines: params => {
-      dispatch(fetchMines(params));
-    }
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BaseGame);
+export default BaseGame;

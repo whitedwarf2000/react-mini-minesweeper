@@ -1,5 +1,5 @@
 import React from "react";
-import BaseGame from "./BaseGame";
+import Game from "./Game";
 
 const Advantage = () => {
   const defaultParams = {
@@ -7,7 +7,7 @@ const Advantage = () => {
     mines: 40
   };
 
-  return <BaseGame defaultParams={defaultParams}/>
+  return <Game defaultParams={defaultParams}/>
 };
 
 export default Advantage;

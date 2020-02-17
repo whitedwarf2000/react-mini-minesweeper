@@ -1,35 +1,74 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import { fetchMines } from "./actions";
-import { getMinesSelector, getLoadingSelector } from "./selectors";
+import {
+  getMinesSelector,
+  getLoadingSelector,
+  getErrorSelector
+} from "./selectors";
 
-import Advantage from "./Advantage";
-import Beginner from "./Beginner";
+import BaseGame from "./components/BaseGame";
+import Timer from "./components/Timer";
+import { GAME_STATUS } from "../../constants";
 
-const Game = props => {
-  const { history } = props;
+const Game = memo(props => {
+  const { getMines, mines, isLoading, error, defaultParams } = props;
 
-  const [renderComponent, setComponent] = useState(null);
+  const size = defaultParams.size;
+  const winScore = size * size - defaultParams.mines;
+
+  const [isGameStart, setGameStart] = useState(false);
+
+  const handleGameStatus = gameStatus => {
+    setGameStart(false);
+
+    if (gameStatus === GAME_STATUS.WIN) alert("You win");
+    else alert("You lost");
+  };
+
+  const startGame = () => {
+    getMines(defaultParams);
+  };
 
   useEffect(() => {
-    if (history) {
-      const {
-        location: { pathname }
-      } = history;
-      if (pathname.includes("beginner")) {
-        setComponent(<Beginner />);
-      } else {
-        setComponent(<Advantage />);
-      }
-    }
-  }, [history]);
+    getMines(defaultParams);
+  }, []);
 
-  return <>{renderComponent}</>;
+  useEffect(() => {
+    if (mines && mines.length > 0) {
+      setGameStart(true);
+    }
+  }, [mines]);
+
+  return (
+    <>
+      <Timer isGameStart={isGameStart} />
+      <BaseGame
+        mines={mines}
+        isLoading={isLoading}
+        error={error}
+        size={size}
+        winScore={winScore}
+        startNewGame={startGame}
+        handleGameStatus={handleGameStatus}
+      />
+    </>
+  );
+});
+
+Game.propTypes = {
+  getMines: PropTypes.func,
+  mines: PropTypes.array,
+  isLoading: PropTypes.bool,
+  error: PropTypes.any,
+  defaultParams: PropTypes.object
 };
 
 const mapStateToProps = state => {
   return {
+    error: getErrorSelector(state),
     isLoading: getLoadingSelector(state),
     mines: getMinesSelector(state)
   };

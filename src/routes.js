@@ -1,5 +1,4 @@
 import WelcomeScreen from "./containers/Welcome";
-import Game from "./containers/Game";
 
 import Advantage from "./containers/Game/Advantage";
 import Beginner from "./containers/Game/Beginner";
@@ -10,17 +9,11 @@ export const routes = [
     component: WelcomeScreen
   },
   {
-    path: "/game",
-    component: Game,
-    routes: [
-      {
-        path: "/game/beginner",
-        component: Beginner
-      },
-      {
-        path: "/game/advance",
-        component: Advantage
-      }
-    ]
+    path: "/game/beginner",
+    component: Beginner
+  },
+  {
+    path: "/game/advantage",
+    component: Advantage
   }
 ];
