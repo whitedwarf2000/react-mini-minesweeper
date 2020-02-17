@@ -1,5 +1,7 @@
 # react-mini-minesweeper
 
+Live demo: https://recordit.co/Li8NkpI3HC
+
 ## Installation
 
  Clone this repo to your local machine via `https://github.com/whitedwarf2000/react-mini-minesweeper.git`
