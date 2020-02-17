@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import "./styles.scss";
 
+import { resetState } from "../Game/actions";
+
 const WelcomeScreen = props => {
-  const { history } = props;
+  const { history, reset } = props;
 
   const startGameForBeginner = () => {
     history.push("/game/beginner");
@@ -13,6 +16,10 @@ const WelcomeScreen = props => {
   const startGameForAdvantage = () => {
     history.push("/game/advantage");
   };
+
+  useEffect(() => {
+    reset();
+  }, []);
 
   return (
     <div className="welcome-wrapper">
@@ -25,4 +32,19 @@ const WelcomeScreen = props => {
   );
 };
 
-export default withRouter(WelcomeScreen);
+const mapStateToProps = state => {
+  return {};
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    reset: () => {
+      dispatch(resetState());
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(WelcomeScreen));
