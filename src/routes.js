@@ -9,11 +9,11 @@ export const routes = [
     component: WelcomeScreen
   },
   {
-    path: "/game/beginner",
+    path: "/beginner",
     component: Beginner
   },
   {
-    path: "/game/advantage",
+    path: "/advantage",
     component: Advantage
   }
 ];

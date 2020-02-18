@@ -1,21 +1,27 @@
-
 import { createSelector } from "reselect";
 
-const gameSelector = state => state.gameReducer;
+const getMines = state => state.get("minesData");
+const getLoading = state => state.get("isLoading");
+const getError = state => state.get("error");
 
 const getMinesSelector = createSelector(
-  gameSelector,
-  mines => mines.minesData
+  getMines,
+  mines => {
+    if (!Array.isArray(mines)) {
+      return mines.toJS();
+    }
+    return mines;
+  }
 );
 
 const getLoadingSelector = createSelector(
-  gameSelector,
-  mines => mines.isLoading
+  getLoading,
+  loading => loading
 );
 
 const getErrorSelector = createSelector(
-  gameSelector,
-  mines => mines.error
+  getError,
+  error => error
 );
 
 export { getMinesSelector, getLoadingSelector, getErrorSelector };
