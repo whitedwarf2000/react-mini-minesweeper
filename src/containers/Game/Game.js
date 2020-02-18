@@ -73,11 +73,11 @@ Game.propTypes = {
   defaultParams: PropTypes.object
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = ({ gameReducer }) => {
   return {
-    error: getErrorSelector(state),
-    isLoading: getLoadingSelector(state),
-    mines: getMinesSelector(state)
+    error: getErrorSelector(gameReducer),
+    isLoading: getLoadingSelector(gameReducer),
+    mines: getMinesSelector(gameReducer)
   };
 };
 

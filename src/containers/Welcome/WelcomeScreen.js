@@ -10,11 +10,11 @@ const WelcomeScreen = props => {
   const { history, reset } = props;
 
   const startGameForBeginner = () => {
-    history.push("/game/beginner");
+    history.push("/beginner");
   };
 
   const startGameForAdvantage = () => {
-    history.push("/game/advantage");
+    history.push("/advantage");
   };
 
   useEffect(() => {
