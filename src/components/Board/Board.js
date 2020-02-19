@@ -142,6 +142,7 @@ const Board = memo(props => {
         </>
       ) : null}
       <div
+        data-testid="board"
         className={`board ${size === 9 ? "beginner-board" : "advantage-board"}`}
       >
         {board && board.length > 0 && board.map(cell => cell)}
