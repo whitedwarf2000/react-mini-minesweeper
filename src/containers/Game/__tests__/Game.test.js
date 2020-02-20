@@ -1,6 +1,6 @@
 import React from "react";
 
-import { render, wait } from "@testing-library/react";
+import { render, wait, fireEvent } from "@testing-library/react";
 import Game from "../Game";
 import { setUpComponent } from "../../../utils/helpers";
 import { beginner } from "../../../utils/mockData";
@@ -50,6 +50,65 @@ test("Game should render Board with mines", async () => {
 
   expect(global.fetch).toHaveBeenCalledTimes(1);
   expect(getByTestId("board").className).toBe("board beginner-board");
+
+  global.fetch.mockClear();
+});
+
+test("Game should be over when user click the boom", async () => {
+  const mockComponent = setUpComponent(<Game {...mockProps} />);
+  jest.spyOn(global, "fetch").mockImplementation(() =>
+    Promise.resolve({
+      status: 200,
+      json: () =>
+        Promise.resolve({
+          msg: "success",
+          data: beginner
+        })
+    })
+  );
+
+  jest.spyOn(window, "alert").mockImplementation(() => "You lost");
+
+  const { getByTestId } = render(mockComponent);
+
+  await wait(() => getByTestId("board"));
+
+  // { x: 1, y: 5 }
+  const minePosition = getByTestId("board").childNodes[14];
+
+  fireEvent.click(minePosition);
+
+  // Open all cells if game over
+  expect(getByTestId("board").textContent).toBe(
+    "1111111💣11💣11111111112💣22💣211124432💣111💣💣💣💣21💣1123321"
+  );
+
+  global.fetch.mockClear();
+});
+
+test("Cell should be showed properly", async () => {
+  const mockComponent = setUpComponent(<Game {...mockProps} />);
+  jest.spyOn(global, "fetch").mockImplementation(() =>
+    Promise.resolve({
+      status: 200,
+      json: () =>
+        Promise.resolve({
+          msg: "success",
+          data: beginner
+        })
+    })
+  );
+  const { getByTestId } = render(mockComponent);
+
+  await wait(() => getByTestId("board"));
+
+  const numberPosition = getByTestId("board").childNodes[13];
+
+  fireEvent.click(numberPosition);
+
+  expect(getByTestId("board").textContent).toBe("1");
+  expect(numberPosition.className).toBe("cell cell_visible");
+  expect(numberPosition.children[0].className).toBe("show");
 
   global.fetch.mockClear();
 });
