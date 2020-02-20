@@ -136,7 +136,10 @@ const Board = memo(props => {
           >
             Back to home
           </button>
-          <button className="button play-again" onClick={handleStartNewGame}>
+          <button
+            className="button play-again"
+            onClick={handleStartNewGame}
+          >
             Reset game
           </button>
         </>

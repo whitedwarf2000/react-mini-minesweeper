@@ -34,7 +34,6 @@ test("BaseGame should set up advantage board properly", () => {
   const { getByTestId } = render(setUpComponent(<BaseGame {...mockProps} />));
 
   expect(getByTestId("board").className).toBe("board advantage-board");
-  console.log('getByTestId', getByTestId("board"))
 });
 
 test("BaseGame should set up beginner board properly", () => {
